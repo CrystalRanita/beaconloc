@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Beacon Locator</string>
+    <string name="app_name" translatable="false">Baby Hunter</string>
     <string name="nav_drawer_open">open drawer</string>
     <string name="nav_drawer_close">close drawer</string>
 
@@ -58,7 +58,7 @@
     <string name="pref_header_actions">Action</string>
 
     <!-- titles activities-->
-    <string name="title_activity_main_navigation">Beacon Locator</string>
+    <string name="title_activity_main_navigation">Baby Hunter</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_beacon">Beacon Action</string>
 
