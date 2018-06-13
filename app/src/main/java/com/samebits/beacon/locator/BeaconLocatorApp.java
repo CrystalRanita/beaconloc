@@ -244,28 +244,21 @@ public class BeaconLocatorApp extends Application implements BootstrapNotifier, 
     @Override
     public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
         if (beacons != null && beacons.size() > 0 && region != null) {
-
             RegionName regName = RegionName.parseString(region.getUniqueId());
-            if (regName.isApplicationRegion()) {
-                Log.d(Constants.TAG, "didRangeBeaconsInRegion " + beacons + "|" + region.getUniqueId());
-
-                if (regName.getEventType() == ActionBeacon.EventType.EVENT_NEAR_YOU) {
-                    Iterator<Beacon> iterator = beacons.iterator();
-                    while (iterator.hasNext()) {
-                        Beacon beacon = iterator.next();
-                        TrackedBeacon tracked = mDataManager.getBeacon(regName.getBeaconId());
-                        mDataManager.updateBeaconDistance(regName.getBeaconId(), beacon.getDistance());
-                        if (tracked != null && BeaconUtil.isInProximity(IManagedBeacon.ProximityType.FAR, tracked.getDistance())) {
-                            if (BeaconUtil.isInProximity(IManagedBeacon.ProximityType.NEAR, beacon.getDistance())
-                                    || BeaconUtil.isInProximity(IManagedBeacon.ProximityType.IMMEDIATE, beacon.getDistance())) {
-
-                                Intent intent = new Intent();
-                                intent.setAction(Constants.NOTIFY_BEACON_NEAR_YOU_REGION);
-                                intent.putExtra("REGION", (Parcelable)region);
-                                getApplicationContext().sendOrderedBroadcast(intent, null);
-                            }
-                        }
-                    }
+            Log.d(Constants.TAG, "didRangeBeaconsInRegion " + beacons + "|" + region.getUniqueId());
+            Iterator<Beacon> iterator = beacons.iterator();
+            while (iterator.hasNext()) {
+                Beacon beacon = iterator.next();
+                TrackedBeacon tracked = mDataManager.getBeacon(regName.getBeaconId());
+                mDataManager.updateBeaconDistance(regName.getBeaconId(), beacon.getDistance());
+                double distBeacon = beacon.getDistance();
+                Log.d(Constants.TAG, "distBeacon: " + distBeacon);
+                if(distBeacon > 2) {
+                    Log.d(Constants.TAG, "distBeacon > 2");
+                    Intent intent = new Intent();
+                    intent.setAction(Constants.NOTIFY_BEACON_LEAVES_REGION);
+                    intent.putExtra("BEACOM", (Parcelable) beacon);
+                    getApplicationContext().sendOrderedBroadcast(intent, null);
                 }
             }
         }

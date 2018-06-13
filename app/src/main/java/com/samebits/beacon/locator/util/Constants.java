@@ -47,6 +47,9 @@ public final class Constants {
     public static final String NOTIFY_BEACON_ENTERS_REGION = "com.samebits.beacon.locator.action.NOTIFY_BEACON_ENTERS_REGION";
     public static final String NOTIFY_BEACON_LEAVES_REGION = "com.samebits.beacon.locator.action.NOTIFY_BEACON_LEAVES_REGION";
     public static final String NOTIFY_BEACON_NEAR_YOU_REGION = "com.samebits.beacon.locator.action.NOTIFY_BEACON_NEAR_YOU_REGION";
+    public static final int NOTIFY_ID_ENTERS_REGION = 20001;
+    public static final int NOTIFY_ID_LEAVES_REGION = 20002;
+    public static final int NOTIFY_ID_NEAR_REGION = 20003;
 
     public static final String ALARM_NOTIFICATION_SHOW = "com.samebits.beacon.locator.action.ALARM_NOTIFICATION_SHOW";
     public static final String GET_CURRENT_LOCATION = "com.samebits.beacon.locator.action.GET_CURRENT_LOCATION";

@@ -222,4 +222,11 @@
     <string name="sort_type_furthest_first">Furthest first</string>
     <string name="sort_type_uuid_major_minor">UUID, Major and Minor</string>
 
+    <!-- Notification -->
+    <string name="notify_leave_region_title">Device Leave</string>
+    <string name="notify_leave_region_content">Warning Device Leave Region!</string>
+    <string name="notify_enter_region_title">Device Enter</string>
+    <string name="notify_enter_region_content">Warning Device Enter Region!</string>
+    <string name="notify_near_region_title">Device Near</string>
+    <string name="notify_near_region_content">Warning Device Near Region!</string>
 </resources>

@@ -25,13 +25,16 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.samebits.beacon.locator.BeaconLocatorApp;
+import com.samebits.beacon.locator.R;
 import com.samebits.beacon.locator.action.ActionExecutor;
 import com.samebits.beacon.locator.action.IAction;
 import com.samebits.beacon.locator.data.DataManager;
 import com.samebits.beacon.locator.model.ActionBeacon;
 import com.samebits.beacon.locator.model.RegionName;
+import com.samebits.beacon.locator.notification.NotificationUtils;
 import com.samebits.beacon.locator.util.Constants;
 
+import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.Region;
 
 import java.util.List;
@@ -48,32 +51,46 @@ public class BeaconRegionReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.i(Constants.TAG, "BeaconRegionReceiver onReceive");
         //TODO
-        if (intent.hasExtra("REGION")) {
-            Region region = intent.getParcelableExtra("REGION");
-            if (region != null) {
-                RegionName regionName = RegionName.parseString(region.getUniqueId());
+        if (intent.hasExtra("BEACOM")) {
+            Beacon beacon = intent.getParcelableExtra("BEACOM");
+            String action = "";
+            if (intent != null && intent.getAction() != null) action = intent.getAction();
 
-                mDataManager = BeaconLocatorApp.from(context).getComponent().dataManager();
-                List<ActionBeacon> actions = mDataManager.getEnabledBeaconActionsByEvent(regionName.getEventType(), regionName.getBeaconId());
-                if (actions.size() > 0) {
-
-                    mActionExecutor = BeaconLocatorApp.from(context).getComponent().actionExecutor();
-                    for (ActionBeacon actionBeacon : actions) {
-                        // load action from db
-                        IAction action = ActionExecutor.actionBuilder(actionBeacon.getActionType(), actionBeacon.getActionParam(), actionBeacon.getNotification());
-                        if (action != null) {
-                            String resMessage = mActionExecutor.storeAndExecute(action);
-                            if (resMessage != null ) {
-                                Toast.makeText(context, resMessage, Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            Log.w(Constants.TAG, "Action not found for " + actionBeacon);
-                        }
-                    }
-                }
+            String title;
+            String content;
+            int id;
+            switch (action) {
+                case Constants.NOTIFY_BEACON_LEAVES_REGION:
+                    Log.i(Constants.TAG, "NOTIFY_BEACON_LEAVES_REGION");
+                    title = context.getString(R.string.notify_leave_region_title);
+                    content = context.getString(R.string.notify_leave_region_content) + " " + beacon.getBluetoothName();
+                    id = Constants.NOTIFY_ID_LEAVES_REGION;
+                    updateNotificationValue(context, id, title, content);
+                    break;
+                case Constants.NOTIFY_BEACON_ENTERS_REGION:
+                    Log.i(Constants.TAG, "NOTIFY_BEACON_ENTERS_REGION");
+                    title = context.getString(R.string.notify_enter_region_title);
+                    content = context.getString(R.string.notify_enter_region_content) + " " + beacon.getBluetoothName();;
+                    id = Constants.NOTIFY_ID_ENTERS_REGION;
+                    updateNotificationValue(context, id, title, content);
+                    break;
+                case Constants.NOTIFY_BEACON_NEAR_YOU_REGION:
+                    Log.i(Constants.TAG, "NOTIFY_BEACON_NEAR_YOU_REGION");
+                    title = context.getString(R.string.notify_near_region_title);
+                    content = context.getString(R.string.notify_near_region_content) + " " + beacon.getBluetoothName();;
+                    id = Constants.NOTIFY_ID_NEAR_REGION;
+                    updateNotificationValue(context, id, title, content);
+                    break;
+                default:
+                    break;
             }
         }
     }
 
+    public static void updateNotificationValue(Context context, int eventID, String title, String content) {
+        Log.i(Constants.TAG, "updateNotificationValue");
+        NotificationUtils.addEventNotification(context, eventID, title, content);
+    }
 }
